@@ -1,19 +1,26 @@
-with open("data.txt") as file:
-    puzzle = file.readlines()
+data_filepath = "day-01/data.txt"
 
-puzzle_int_vals = []
 
-for row in puzzle:
-    int_vals = []
-    for v in row:
-        try:
-            int_vals.append(int(v))
-        except ValueError:
-            continue
-    puzzle_int_vals.append(int_vals)
+def load_data(filepath):
+    with open(filepath) as file:
+        data = file.read()
+    return data.split("\n")
 
-sum = 0
-for row in puzzle_int_vals:
-    sum += int(str(row[0])+str(row[-1]))
 
-print("sum:", sum)
+def get_first_digit(s):
+    for char in s:
+        if char.isdigit():
+            return char
+
+
+# Load data
+puzzle = load_data(data_filepath)
+
+# Extract first and last digits from each string
+puzzle = [get_first_digit(s) + get_first_digit(s[::-1]) for s in puzzle]
+
+# Cast to integers
+puzzle = [int(s) for s in puzzle]
+
+# Display sum
+print(sum(puzzle))

@@ -1,3 +1,5 @@
+data_filepath = "day-01/data.txt"
+
 string_digits = [
     ["one", "1"],
     ["two", "2"],
@@ -10,67 +12,60 @@ string_digits = [
     ["nine", "9"],
 ]
 
-def replace_first_string_digit(s):
+string_digits_rev = [[d[0][::-1], d[1]] for d in string_digits]
+
+
+def load_data(filepath):
+    with open(filepath) as file:
+        data = file.read()
+    return data.split("\n")
+
+
+def replace_first_substring(s, match_candidates):
     positions = []
 
-    for digit in string_digits:
-        pos = s.find(digit[0])
+    for m in match_candidates:
+        pos = s.find(m[0])
         if pos >= 0:
-            positions.append(digit + [pos])
+            # Substring found in array
+            positions.append(m + [pos])
 
     if positions:
-        # Return min of positions by third element
-        first_string_digit = min(positions, key=lambda p: p[2])
+        # Return min of positions by third element (position in parent string)
+        first_match = min(positions, key=lambda p: p[2])
 
         # Replace the first occurence with the corresponding digit
-        s = s.replace(first_string_digit[0], first_string_digit[1], 1)
-        
+        s = s.replace(first_match[0], first_match[1], 1)
+
     return s
 
 
-def replace_last_string_digit(s):
-    # Reverse string
-    s = s[::-1]
-    
-    positions = []
-    
-    for digit in string_digits:
-        pos = s.find(digit[0][::-1])
-        if pos >= 0:
-            positions.append(digit + [pos])
-
-    if positions:
-        # return min of positions by third element
-        first_string_digit = min(positions, key=lambda p: p[2])
-
-        # replace the first occurence with the corresponding digit
-        s = s.replace(first_string_digit[0][::-1], first_string_digit[1], 1)
-        
-    return s[::-1]
+def get_first_digit(s):
+    for char in s:
+        if char.isdigit():
+            return char
 
 
-with open("data.txt") as file:
-    puzzle = file.readlines()
+# Load data
+puzzle = load_data(data_filepath)
 
-# Replace first string digit
-puzzle = [replace_first_string_digit(s) for s in puzzle]
+# Replace the first string digit
+puzzle = [replace_first_substring(s, string_digits) for s in puzzle]
 
-# Replace last string digit
-puzzle = [replace_last_string_digit(s) for s in puzzle]
+# Reverse all the strings
+puzzle = [s[::-1] for s in puzzle]
 
-puzzle_int_vals = []
+# Replace all first (reversed) string digits
+puzzle = [replace_first_substring(s, string_digits_rev) for s in puzzle]
 
-for row in puzzle:
-    int_vals = []
-    for v in row:
-        try:
-            int_vals.append(int(v))
-        except ValueError:
-            continue
-    puzzle_int_vals.append(int_vals)
+# Restore original string order
+puzzle = [s[::-1] for s in puzzle]
 
-sum = 0
-for row in puzzle_int_vals:
-    sum += int(str(row[0])+str(row[-1]))
+# Extract first and last digits from each string
+puzzle = [get_first_digit(s) + get_first_digit(s[::-1]) for s in puzzle]
 
-print("sum:", sum)
+# Cast to integers
+puzzle = [int(s) for s in puzzle]
+
+# Display sum
+print(sum(puzzle))
