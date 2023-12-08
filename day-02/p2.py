@@ -100,5 +100,5 @@ puzzle = build_game_dict(puzzle)
 # Get powers
 puzzle = [get_power(game) for game in puzzle.items()]
 
-# Sum list
+# Sum list (result 63711)
 print(sum(puzzle))

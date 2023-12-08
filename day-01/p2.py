@@ -43,5 +43,5 @@ puzzle = [get_first_digit(s) + get_first_digit(s[::-1]) for s in puzzle]
 # Cast to integers
 puzzle = [int(s) for s in puzzle]
 
-# Display sum
+# Display sum (result 55652)
 print(sum(puzzle))

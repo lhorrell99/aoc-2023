@@ -101,5 +101,5 @@ puzzle = build_game_dict(puzzle)
 # Filter impossible games
 puzzle = dict(filter(lambda x: filter_game(x, bag), puzzle.items()))
 
-# Sum remaining keys
+# Sum remaining keys (result 2439)
 print(sum(puzzle.keys()))
