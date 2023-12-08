@@ -1,4 +1,4 @@
-data_filepath = "day-03/data.txt"
+data_filepath = "day-03/data-test.txt"
 
 
 def load_data(filepath):
@@ -23,17 +23,18 @@ def test_neighbours(candidate, schema_string, symbols, rel_indices):
         symbols: all symbols contained in engine schematic
         rel_indices: relative locations of neighbours in schema_string
     Returns:
-        True if value has a symbolic neighbour
+        Index of symbolic neighbour (if present)
     """
 
     for i in rel_indices:
         if schema_string[candidate[0] + i] in symbols:
-            return True
+            # Only ever 1 symbol adjacent to a number (tested)
+            return candidate[0] + i
 
-    return False
+    return None
 
 
-def explore_neighbours(candidate, schema_string):
+def explore_neighbours(c_index, schema_string):
     """
     Args:
         candidate: (index, value) tuple to test e.g. (13, '4')
@@ -53,12 +54,11 @@ def explore_neighbours(candidate, schema_string):
             return r_call[0] + schema_string[i], r_call[1]
         return schema_string[i], i
 
-    c_index = candidate[0]
     right = recurse_right(c_index)
     left, start_index = recurse_left(c_index)
     left = left[:-1]
 
-    return (start_index, int(left + right))
+    return [start_index, int(left + right)]
 
 
 puzzle = load_data(data_filepath)
@@ -89,31 +89,25 @@ neighbours = [
 # Reduce to 1D string
 puzzle_str = "".join(puzzle)
 
-# Find unique characters
-unique_chars = "".join(set(puzzle_str))
-
-# Find symbols (except period)
-puzzle_symbols = "".join(c for c in unique_chars if not c.isnumeric() and not c == ".")
-
 # Save indices of all elements
 puzzle_enum = list(enumerate(puzzle_str))
 
 # Remove all symbols
 puzzle_digits = list(filter(lambda x: x[1].isnumeric(), puzzle_enum))
 
-# Remove any numbers without symbolic neighbours
-digits_sym_neighbours = list(
-    filter(
-        lambda x: test_neighbours(x, puzzle_str, puzzle_symbols, neighbours),
-        puzzle_digits,
-    )
-)
+# Find all digits with symbolic ("*") neighbours (tuple format is (index, value, symbolic neighbour index))
+digits_sym_neighbours = [
+    [n[0], n[1], test_neighbours(n, puzzle_str, "*", neighbours)] for n in puzzle_digits
+]
 
-# Find continuous numbers
-schema_numbers = [explore_neighbours(i, puzzle_str) for i in digits_sym_neighbours]
+# Remove any digits without any symbolic ("*") neighbours
+digits_sym_neighbours = filter(lambda x: x[2], digits_sym_neighbours)
+
+# Find continuous numbers (tuple format is (start index, value, symbolic neighbour index))
+schema_numbers = [explore_neighbours(i[0], puzzle_str) + [i[2]] for i in digits_sym_neighbours]
+
+# Convert to tuples (enables hashing)
+schema_numbers = [tuple(i) for i in schema_numbers]
 
 # Remove duplicates
 schema_numbers = list(set(schema_numbers))
-
-# Print sum (result 528799)
-print(sum(i[1] for i in schema_numbers))
