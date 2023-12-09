@@ -1,4 +1,4 @@
-data_filepath = "day-03/data-test.txt"
+data_filepath = "day-03/data.txt"
 
 
 def load_data(filepath):
@@ -104,10 +104,24 @@ digits_sym_neighbours = [
 digits_sym_neighbours = filter(lambda x: x[2], digits_sym_neighbours)
 
 # Find continuous numbers (tuple format is (start index, value, symbolic neighbour index))
-schema_numbers = [explore_neighbours(i[0], puzzle_str) + [i[2]] for i in digits_sym_neighbours]
+schema_numbers = [
+    explore_neighbours(i[0], puzzle_str) + [i[2]] for i in digits_sym_neighbours
+]
 
 # Convert to tuples (enables hashing)
 schema_numbers = [tuple(i) for i in schema_numbers]
 
 # Remove duplicates
 schema_numbers = list(set(schema_numbers))
+
+# Get all (unique) symbol locations
+sym_indices = list(set(i[2] for i in schema_numbers))
+
+# Group by symbol
+sym_grouped = [list(filter(lambda x: x[2] == i, schema_numbers)) for i in sym_indices]
+
+# Find powers for symbols that appear exactly twice
+powers = [i[0][1] * i[1][1] for i in sym_grouped if len(i) == 2]
+
+# Print sum (result 84907174)
+print(sum(powers))
