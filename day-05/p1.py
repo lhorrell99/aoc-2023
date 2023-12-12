@@ -1,10 +1,11 @@
 data_filepath = "day-05/data.txt"
 
 
-def load_data(filepath):
+def load_data(filepath, split_delimiter):
     """
     Args:
         filepath (e.g.): "day-02/data.txt"
+        split_delimiter (e.g.): "\n"
     Returns:
         list of entries, split on double newlines
     """
@@ -12,81 +13,88 @@ def load_data(filepath):
     with open(filepath) as file:
         data = file.read()
 
-    return data.split("\n\n")
+    return data.split(split_delimiter)
+
+
+def create_mapping_dict(map_string):
+    """
+    Args:
+        map_string (e.g.): "50 98 2"
+    Returns:
+        (e.g.): {"to": 50, "from": 98, "range": 2}
+    """
+
+    map = map_string.split(" ")
+    return {"to": int(map[0]), "from": int(map[1]), "range": int(map[2])}
 
 
 def process_map(map):
     """
     Args:
-        map (e.g.): 'seed-to-soil map:\n50 98 2\n52 50 48'
+        map (e.g.): "seed-to-soil map:\n50 98 2\n52 50 48"
     Returns:
-        descriptor (e.g.): 'seed-to-soil map'
-        processed_values (e.g.): [{'from_start': '50', 'to_start': '98', 'range': '2'}]
+        descriptor (e.g.): "seed-to-soil map"
+        processed_values (e.g.): [{"from_start": "50", "to_start": "98", "range": "2"}]
     """
 
-    # Extract map descriptor
     descriptor, values = map.split(":\n")
-
-    processed_values = []
-    for row in values.split("\n"):
-        row = row.split(" ")
-        processed_values.append(
-            {"to_start": int(row[0]), "from_start": int(row[1]), "range": int(row[2])}
-        )
-
-    return descriptor, processed_values
+    return [create_mapping_dict(r) for r in values.split("\n")]
 
 
-def find_mapping(val, maps, from_to_key):
+def transform(layer, value, maps, forward):
     """
     Args:
-        val (e.g.): 79
-        maps: dictionary of map data
-        from_to_key (e.g.): "seed-to-soil map"
+        layer (e.g.): 1
+        value (e.g.): 50
+        maps (e.g.): [[{"from_start": "50", "to_start": "98", "range": "2"}]]
+        forward (e.g.): True
     Returns:
-        the mapped value
+        the new value after applying the transformation from the specified map and layer
     """
 
-    for m in maps[from_to_key]:
-        if m["from_start"] <= val < m["from_start"] + m["range"]:
-            return m["to_start"] + (val - m["from_start"])
+    src, dest = ("from", "to") if forward else ("to", "from")
+
+    for m in maps[layer]:
+        if m[src] <= value < m[src] + m["range"]:
+            return m[dest] + (value - m[src])
 
     # No mapping found
-    return val
+    return value
 
 
-base_data = load_data(data_filepath)
+def recurse_forward(layer, value, maps):
+    """
+    Args:
+        layer (e.g.): 1
+        value (e.g.): 50
+        maps (e.g.): [[{"from_start": "50", "to_start": "98", "range": "2"}]]
+    Returns:
+        the corresponding location value
+    """
+
+    if layer == len(maps):
+        return value
+
+    # Calculate new value
+    value = transform(layer, value, maps, True)
+
+    # Recurse
+    return recurse_forward(layer + 1, value, maps)
+
+
+# Load data
+base_data = load_data(data_filepath, "\n\n")
+
+# Process seed values
 seeds = base_data.pop(0)
-
-# Process seeds values
-seeds = seeds.split(": ")[1]
+descriptor, seeds = seeds.split(": ")
 seeds = [int(i) for i in seeds.split(" ")]
 
-# Process maps (TODO: clean up)
-keys = [process_map(i)[0] for i in base_data]
-vals = [process_map(i)[1] for i in base_data]
-maps = dict(zip(keys, vals))
+# Process maps
+maps = [process_map(i) for i in base_data]
 
-# Get seed-to-soil maps
-soils = [find_mapping(i, maps, "seed-to-soil map") for i in seeds]
-
-# Get soil-to-fertilizer maps
-fertilizers = [find_mapping(i, maps, "soil-to-fertilizer map") for i in soils]
-
-# Get fertilizer-to-water maps
-waters = [find_mapping(i, maps, "fertilizer-to-water map") for i in fertilizers]
-
-# Get water-to-light maps
-lights = [find_mapping(i, maps, "water-to-light map") for i in waters]
-
-# Get light-to-temperature maps
-temperatures = [find_mapping(i, maps, "light-to-temperature map") for i in lights]
-
-# Get temperature-to-humidity maps
-humidities = [find_mapping(i, maps, "temperature-to-humidity map") for i in temperatures]
-
-# Get humidity-to-location maps
-locations = [find_mapping(i, maps, "humidity-to-location map") for i in humidities]
+# Find locations
+locations = [recurse_forward(0, s, maps) for s in seeds]
 
 # Print closest location (result 165788812)
 print(min(locations))
