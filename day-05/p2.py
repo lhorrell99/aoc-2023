@@ -1,4 +1,4 @@
-data_filepath = "day-05/data-test.txt"
+data_filepath = "day-05/data.txt"
 
 
 def load_data(filepath, split_delimiter):
@@ -31,10 +31,10 @@ def create_mapping_dict(map_string):
 def process_map(map):
     """
     Args:
-        map (e.g.): 'seed-to-soil map:\n50 98 2\n52 50 48'
+        map (e.g.): "seed-to-soil map:\n50 98 2\n52 50 48"
     Returns:
-        descriptor (e.g.): 'seed-to-soil map'
-        processed_values (e.g.): [{'from_start': '50', 'to_start': '98', 'range': '2'}]
+        descriptor (e.g.): "seed-to-soil map"
+        processed_values (e.g.): [{"from_start": "50", "to_start": "98", "range": "2"}]
     """
 
     descriptor, values = map.split(":\n")
@@ -42,7 +42,17 @@ def process_map(map):
 
 
 def transform(layer, value, maps, forward):
-    src, dest = ("to", "from") if forward else ("from", "to")
+    """
+    Args:
+        layer (e.g.): 1
+        value (e.g.): 50
+        maps (e.g.): [[{"from_start": "50", "to_start": "98", "range": "2"}]]
+        forward (e.g.): True
+    Returns:
+        the new value after applying the transformation from the specified map and layer
+    """
+
+    src, dest = ("from", "to") if forward else ("to", "from")
 
     for m in maps[layer]:
         if m[src] <= value < m[src] + m["range"]:
@@ -53,6 +63,15 @@ def transform(layer, value, maps, forward):
 
 
 def recurse_back(layer, value, maps):
+    """
+    Args:
+        layer (e.g.): 1
+        value (e.g.): 50
+        maps (e.g.): [[{"from_start": "50", "to_start": "98", "range": "2"}]]
+    Returns:
+        the corresponding seed value
+    """
+
     if layer == -1:
         return value
 
@@ -64,6 +83,15 @@ def recurse_back(layer, value, maps):
 
 
 def recurse_forward(layer, value, maps):
+    """
+    Args:
+        layer (e.g.): 1
+        value (e.g.): 50
+        maps (e.g.): [[{"from_start": "50", "to_start": "98", "range": "2"}]]
+    Returns:
+        the corresponding location value
+    """
+
     if layer == len(maps):
         return value
 
@@ -74,9 +102,17 @@ def recurse_forward(layer, value, maps):
     return recurse_forward(layer + 1, value, maps)
 
 
-def test_seed_range(val, seeds_list):
+def test_seed_range(value, seeds_list):
+    """
+    Args:
+        value (e.g.): 50
+        seeds_list (e.g.): [{"start": 79, "range": 14}]
+    Returns:
+        True if the value is in an input seed range
+    """
+
     for s in seeds_list:
-        if s["start"] <= val < s["start"] + s["range"]:
+        if s["start"] <= value < s["start"] + s["range"]:
             return True
 
     return False
@@ -109,14 +145,16 @@ test_vals = test_vals + [(-1, m["start"]) for m in seeds]
 # Recurse back
 test_vals = [(c[0], c[1], recurse_back(*c, maps)) for c in test_vals]
 
-# Recurse forward
-test_vals = [(c[0], c[1], c[2], recurse_forward(c[0], c[1], maps)) for c in test_vals]
-
 # Filter values where input is outside a seed range
 test_vals = filter(lambda x: test_seed_range(x[2], seeds), test_vals)
+
+# Recurse forward
+test_vals = [
+    (c[0], c[1], c[2], recurse_forward(c[0] + 1, c[1], maps)) for c in test_vals
+]
 
 # Sort by lowest match
 test_vals = sorted(test_vals, key=lambda x: x[3])
 
-# Display output
-print(test_vals[0])
+# Display lowest location output (result 1928058)
+print(test_vals[0][3])
