@@ -1,6 +1,7 @@
 # folders
 .vscode
 __pycache__/
+template
 
 # files
 .DS_Store
