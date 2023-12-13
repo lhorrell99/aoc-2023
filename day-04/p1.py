@@ -41,13 +41,9 @@ puzzle = [i.split(": ")[1] for i in puzzle]
 # Separate winning and candidate numbers
 puzzle = [i.split("| ") for i in puzzle]
 
-# Extract winning and candidate values
-win_vals = [i[0].split(" ") for i in puzzle]
-can_vals = [i[1].split(" ") for i in puzzle]
-
-# Filter empty strings and add to sets
-win_vals = [set(filter(None, i)) for i in win_vals]
-can_vals = [set(filter(None, i)) for i in can_vals]
+# Extract winning and candidate values and add to sets
+win_vals = [set(i[0].split()) for i in puzzle]
+can_vals = [set(i[1].split()) for i in puzzle]
 
 # Zip list
 card_data = list(zip(can_vals, win_vals))
