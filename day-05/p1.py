@@ -4,10 +4,10 @@ data_filepath = "day-05/data.txt"
 def load_data(filepath, split_delimiter):
     """
     Args:
-        filepath (e.g.): "day-02/data.txt"
+        filepath (e.g.): "day-00/data.txt"
         split_delimiter (e.g.): "\n"
     Returns:
-        list of entries, split on double newlines
+        list of entries, split on specified delimiter
     """
 
     with open(filepath) as file:

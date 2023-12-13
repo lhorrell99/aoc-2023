@@ -4,7 +4,7 @@ data_filepath = "day-02/data.txt"
 def load_data(filepath):
     """
     Args:
-        filepath (e.g.): "day-02/data.txt"
+        filepath (e.g.): "day-00/data.txt"
     Returns:
         list of entries, split on newlines
     """
@@ -44,7 +44,7 @@ def process_game_data(game_data_string):
     Args:
         game_data_string (e.g.): "3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green"
     Returns:
-        game_data (e.g.): [{"r": 4, "b": 3}, {"r": 1, "g": 2, "b": 6}, {"g": 2}]
+        (e.g.): [{"r": 4, "b": 3}, {"r": 1, "g": 2, "b": 6}, {"g": 2}]
     """
 
     game_data = game_data_string.split("; ")
@@ -75,9 +75,9 @@ def build_game_dict(puzzle):
 def get_power(game_data):
     """
     Args:
-        game_data (e.g.): (1, [{'blue': '3', 'red': '4'}, {'red': '1', 'green': '2', 'blue': '6'}, {'green': '2'}])
+        game_data (e.g.): (1, [{"blue": "3", "red": "4"}, {"red": "1", "green": "2", "blue": "6"}, {"green": "2"}])
     Returns:
-        True if all draws could have come from bag, false if not
+        True if all draws could have come from bag
     """
     min_bag = {"red": 0, "green": 0, "blue": 0}
 

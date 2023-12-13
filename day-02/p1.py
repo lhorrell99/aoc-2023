@@ -6,7 +6,7 @@ bag = {"red": 12, "green": 13, "blue": 14}
 def load_data(filepath):
     """
     Args:
-        filepath (e.g.): "day-02/data.txt"
+        filepath (e.g.): "day-00/data.txt"
     Returns:
         list of entries, split on newlines
     """
@@ -77,9 +77,9 @@ def build_game_dict(puzzle):
 def filter_game(game_data, bag_data):
     """
     Args:
-        game_data (e.g.): (1, [{'blue': '3', 'red': '4'}, {'red': '1', 'green': '2', 'blue': '6'}, {'green': '2'}])
+        game_data (e.g.): (1, [{"blue": "3", "red": "4"}, {"red": "1", "green": "2", "blue": "6"}, {"green": "2"}])
     Returns:
-        True if all draws could have come from bag, false if not
+        True if all draws could have come from bag
     """
 
     game_id, draws = game_data

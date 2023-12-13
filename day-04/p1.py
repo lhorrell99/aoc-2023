@@ -1,31 +1,31 @@
 data_filepath = "day-04/data.txt"
 
 
-def load_data(filepath):
+def load_data(filepath, split_delimiter):
     """
     Args:
-        filepath (e.g.): "day-02/data.txt"
+        filepath (e.g.): "day-00/data.txt"
+        split_delimiter (e.g.): "\n"
     Returns:
-        list of entries, split on newlines
+        list of entries, split on specified delimiter
     """
 
     with open(filepath) as file:
         data = file.read()
 
-    return data.split("\n")
+    return data.split(split_delimiter)
 
 
-def count_matches(i, can_vals, win_vals):
+def count_matches(i, c_data):
     """
     Args:
         i: index to evaluate
-        can_vals: array of candidate values for all cards
-        win_vals: array of winning values for all cards
+        card_data (e.g.): ({"6", "31", "83"}, {"83", "17", "48"})
     Returns:
         the value of the card
     """
 
-    count = len(can_vals[i] & win_vals[i])
+    count = len(c_data[0] & c_data[1])
 
     if count:
         return 2 ** (count - 1)
@@ -33,7 +33,7 @@ def count_matches(i, can_vals, win_vals):
     return 0
 
 
-puzzle = load_data(data_filepath)
+puzzle = load_data(data_filepath, "\n")
 
 # Remove card numbers
 puzzle = [i.split(": ")[1] for i in puzzle]
@@ -49,8 +49,11 @@ can_vals = [i[1].split(" ") for i in puzzle]
 win_vals = [set(filter(None, i)) for i in win_vals]
 can_vals = [set(filter(None, i)) for i in can_vals]
 
-# Calculate all card values
-card_values = [count_matches(i, can_vals, win_vals) for i in range(len(win_vals))]
+# Zip list
+card_data = list(zip(can_vals, win_vals))
 
-# Display sum
+# Calculate all card values
+card_values = [count_matches(i, c) for i, c in enumerate(card_data)]
+
+# Display sum (result 20117)
 print(sum(card_values))

@@ -4,7 +4,7 @@ data_filepath = "day-03/data.txt"
 def load_data(filepath):
     """
     Args:
-        filepath (e.g.): "day-02/data.txt"
+        filepath (e.g.): "day-00/data.txt"
     Returns:
         list of entries, split on newlines
     """
@@ -18,7 +18,7 @@ def load_data(filepath):
 def test_neighbours(candidate, schema_string, symbols, rel_indices):
     """
     Args:
-        candidate: (index, value) tuple to test e.g. (13, '4')
+        candidate: (index, value) tuple to test e.g. (13, "4")
         schema_string: the (1D) engine schematic
         symbols: all symbols contained in engine schematic
         rel_indices: relative locations of neighbours in schema_string
@@ -36,7 +36,7 @@ def test_neighbours(candidate, schema_string, symbols, rel_indices):
 def explore_neighbours(candidate, schema_string):
     """
     Args:
-        candidate: (index, value) tuple to test e.g. (13, '4')
+        candidate: (index, value) tuple to test e.g. (13, "4")
         schema_string: the (1D) engine schematic
     Returns:
         complete continuous number and starting index
