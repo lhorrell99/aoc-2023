@@ -19,7 +19,7 @@ def get_roots(a, b, c):
     return (-b + desc_root) / (2 * a), (-b - desc_root) / (2 * a)
 
 
-# Process base data (note: t = time, r = record, c = charge, s = distance)
+# Load data (note: t = time, r = record, c = charge, s = distance)
 base_data = load_data(data_filepath, "\n")
 t = process_base_data(base_data[0])
 r = process_base_data(base_data[1])

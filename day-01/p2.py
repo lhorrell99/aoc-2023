@@ -13,10 +13,11 @@ string_digit_replacements = [
 ]
 
 
-def load_data(filepath):
+def load_data(filepath, split_delimiter):
     with open(filepath) as file:
         data = file.read()
-    return data.split("\n")
+
+    return data.split(split_delimiter)
 
 
 def replace_substrings(s, candidates):
@@ -32,7 +33,7 @@ def get_first_digit(s):
 
 
 # Load data
-puzzle = load_data(data_filepath)
+puzzle = load_data(data_filepath, "\n")
 
 # Replace substrings
 puzzle = [replace_substrings(s, string_digit_replacements) for s in puzzle]

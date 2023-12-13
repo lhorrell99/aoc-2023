@@ -33,6 +33,7 @@ def count_cards(i, c_data, card_counts):
         card_counts[i + (j + 1)] += card_count
 
 
+# Load data
 puzzle = load_data(data_filepath, "\n")
 
 # Remove card numbers

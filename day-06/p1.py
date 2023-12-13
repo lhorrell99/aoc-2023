@@ -24,7 +24,7 @@ def filter_distances(d_list, r):
     return list(filter(lambda x: x > r, d_list))
 
 
-# Process base data
+# Load data
 base_data = load_data(data_filepath, "\n")
 times = process_base_data(base_data[0])
 records = process_base_data(base_data[1])

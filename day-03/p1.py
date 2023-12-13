@@ -1,18 +1,19 @@
 data_filepath = "day-03/data.txt"
 
 
-def load_data(filepath):
+def load_data(filepath, split_delimiter):
     """
     Args:
         filepath (e.g.): "day-00/data.txt"
+        split_delimiter (e.g.): "\n"
     Returns:
-        list of entries, split on newlines
+        list of entries, split on specified delimiter
     """
 
     with open(filepath) as file:
         data = file.read()
 
-    return data.split("\n")
+    return data.split(split_delimiter)
 
 
 def test_neighbours(candidate, schema_string, symbols, rel_indices):
@@ -61,7 +62,8 @@ def explore_neighbours(candidate, schema_string):
     return (start_index, int(left + right))
 
 
-puzzle = load_data(data_filepath)
+# Load data
+puzzle = load_data(data_filepath, "\n")
 row_len = len(puzzle[0])
 
 # Pad list - north/south

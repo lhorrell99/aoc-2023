@@ -33,6 +33,7 @@ def count_matches(i, c_data):
     return 0
 
 
+# Load data
 puzzle = load_data(data_filepath, "\n")
 
 # Remove card numbers
