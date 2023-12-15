@@ -21,11 +21,11 @@ def load_data(filepath, split_delimiter):
     return data.split(split_delimiter)
 
 
-def recurse(a, b, count, map):
+def recurse(a, b, count, map, pipes):
     """
     Args:
-        a (e.g.): ('S', 6956)
-        b (e.g.): ('W', 6956)
+        a (e.g.): ("S", 6956)
+        b (e.g.): ("W", 6956)
         count: 0
         map: the flattened map
     Returns:
@@ -44,7 +44,7 @@ def recurse(a, b, count, map):
     next_a = (pipes[map[next_a_loc]][a[0]], next_a_loc)
     next_b = (pipes[map[next_b_loc]][b[0]], next_b_loc)
 
-    return recurse(next_a, next_b, count + 1, map)
+    return recurse(next_a, next_b, count + 1, map, pipes)
 
 
 # Load data
@@ -78,4 +78,4 @@ s_loc = map.index("S")
 s_a, s_b = [(d, s_loc) for d in deltas.keys() if d in pipes[map[s_loc + deltas[d]]]]
 
 # Calculate and display furthest location from start point (result 7066)
-print(recurse(s_a, s_b, 0, map))
+print(recurse(s_a, s_b, 0, map, pipes))
