@@ -61,6 +61,12 @@ def recurse(a, b, count, p_dict, d_dict, map_dict):
 # Load data
 base_data = load_data(data_filepath, "\n")
 
+# Pad
+row_len = len(base_data[0])
+base_data.insert(0, "." * row_len)
+base_data.append("." * row_len)
+base_data = ["." + r + "." for r in base_data]
+
 # Build dictionary of indexed values
 map = {(x, y): c for y, r in enumerate(base_data) for x, c in enumerate(r)}
 
