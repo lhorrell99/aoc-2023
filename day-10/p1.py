@@ -37,7 +37,7 @@ def get_matching_keys(val, search_dict):
     return keys
 
 
-def get_start_dirs(d, start_loc, p_dict, d_dict, map_dict):
+def is_start_dir(d, start_loc, p_dict, d_dict, map_dict):
     new_loc = (start_loc[0] + d_dict[d][0], start_loc[1] + d_dict[d][1])
     return True if d in p_dict[map_dict[new_loc]] else False
 
@@ -72,7 +72,7 @@ map = {(x, y): c for y, r in enumerate(base_data) for x, c in enumerate(r)}
 
 # Find start index and starting directions
 loc = get_matching_keys("S", map).pop()
-sa, sb = [[d, loc] for d in deltas.keys() if get_start_dirs(d, loc, pipes, deltas, map)]
+sa, sb = [[d, loc] for d in deltas.keys() if is_start_dir(d, loc, pipes, deltas, map)]
 
 # Calculate and display furthest location from start point (result 7066)
 print(recurse(sa, sb, 0, pipes, deltas, map))
